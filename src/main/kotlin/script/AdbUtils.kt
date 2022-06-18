@@ -1,6 +1,8 @@
 package main.kotlin.script
 
 import script.getPropertyOsName
+import script.test.Adb
+import script.test.TestResult
 import java.io.File
 
 val APP_PACKAGE_NAME = "com.bingo.spadedemo"
@@ -28,6 +30,22 @@ fun install(apkPath: String): String {
     return "adb install -r -d -t $apkPath"
 }
 
+
+/**
+ *
+Status: ok
+LaunchState: HOT
+Activity: com.bingo.spadedemo/.ui.MainActivity
+TotalTime: 144
+WaitTime: 176
+Complete
+ *
+ * ThisTime: 该Activity的启动耗时；
+
+TotalTime: 应用自身启动耗时, ThisTime+应用application等资源启动时间；
+
+WaitTime: 系统启动应用耗时, TotalTime+系统资源启动时间
+ */
 fun coldStart(pkg: String): String {
     return "adb shell am start -W -n ${pkg}/.ui.MainActivity"
 }
@@ -47,4 +65,29 @@ fun getCurrentPackage(): String {
     }
 
     return "adb shell dumpsys window | findstr mCurrentFocus"
+}
+
+fun dump(pkg: String): String {
+    return "adb shell dumpsys meminfo $pkg"
+}
+
+/**
+ *
+ * 打开手机：开发者选项—>profile GPU rendering —> in adb shell dumpsys gfxinfo
+ *
+ * Draw: 表示在Java中创建显示列表部分中，OnDraw()方法占用的时间。
+
+Process：表示渲染引擎执行显示列表所花的时间，view越多，时间就越长。
+
+Execute：表示把一帧数据发送到屏幕上排版显示实际花费的时间。
+
+Draw + Process + Execute = 完整显示一帧 ，这个时间要小于16ms才能保存每秒60帧。
+ */
+fun fps(pkg: String): String {
+    return "adb shell dumpsys gfxinfo $pkg"
+}
+
+
+fun monkey(pkg: String, times: Int = 1000): String {
+    return "adb shell monkey -v -p $pkg $times"
 }
