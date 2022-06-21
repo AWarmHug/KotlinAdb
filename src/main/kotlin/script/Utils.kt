@@ -2,7 +2,7 @@ package script
 
 import java.nio.file.Paths
 
-fun String.getUsefulInfoByKeyword(startWord: String, endWord:String="\n"): String {
+fun String.getUsefulInfoByKeyword(startWord: String, endWord: String = "\n"): String {
     val start = indexOf(startWord) + startWord.length
 
     val end = indexOf(endWord)
@@ -20,3 +20,5 @@ fun getPropertyOsName(): String {
     val props = System.getProperties(); //获得系统属性集
     return props.getProperty("os.name");
 }
+
+fun isMac(): Boolean = getPropertyOsName().contains("Mac")

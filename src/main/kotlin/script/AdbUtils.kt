@@ -1,9 +1,6 @@
-package main.kotlin.script
+package script
 
-import script.getPropertyOsName
-import script.test.Adb
-import script.test.TestResult
-import java.io.File
+import script.isMac
 
 val APP_PACKAGE_NAME = "com.bingo.spadedemo"
 
@@ -20,7 +17,7 @@ fun getApkPath(pkg: String): String = "adb shell pm path $pkg"
  */
 fun pullApk(apkPath: String, outPath: String): String = "adb pull $apkPath $outPath"
 
-fun getVersion(pkg: String): String = "adb shell dumpsys package $pkg | findstr versionCode"
+fun getVersion(pkg: String): String = "adb shell dumpsys package $pkg | ${if (isMac()) "grep" else "findstr " } versionCode"
 
 
 //val APP_START_COLD = "adb shell am start -W ${APP_PACKAGE_NAME}/com.bertadata.qxb.module.main.splash.SplashActivity"
@@ -59,12 +56,7 @@ fun back(): String {
 }
 
 fun getCurrentPackage(): String {
-
-    if (getPropertyOsName().contains("Mac")) {
-        return "adb shell dumpsys window | grep mCurrentFocus"
-    }
-
-    return "adb shell dumpsys window | findstr mCurrentFocus"
+    return "adb shell dumpsys window | ${if (isMac()) "grep" else "findstr "} mCurrentFocus"
 }
 
 fun dump(pkg: String): String {

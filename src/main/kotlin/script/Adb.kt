@@ -1,8 +1,10 @@
-package script.test
+package script
 
-class Adb(val name: String, val cmd: String) {
+typealias GetUserfulInfo<T> = (String) -> T
 
-    fun runAndWaitExec(): TestResult {
+class Adb<T>(val name: String, val cmd: String, private val block: (GetUserfulInfo<T>)) {
+
+    fun runAndWaitExec(): AdbResult<T> {
 
         println(this.toString())
         val current = System.currentTimeMillis()
@@ -15,18 +17,22 @@ class Adb(val name: String, val cmd: String) {
         val result = String(exec.inputStream.readAllBytes())
         println("result = $result")
 
+        val newResult = block.invoke(result)
+
         val error = String(exec.errorStream.readAllBytes())
         println(error)
 
         if (error.isNotEmpty()) {
-            return TestResult(false, error, time)
+            return AdbResult<T>(Error(error), time)
         } else {
-            return TestResult(true, result, time)
+
+            return AdbResult<T>(newResult, time)
         }
     }
 
-
     override fun toString(): String {
-        return "Adb(name='$name', cmd='$cmd')"
+        return "Adb(name='$name', cmd='$cmd', block=$block)"
     }
+
+
 }

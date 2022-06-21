@@ -1,14 +1,10 @@
-package main.kotlin.script
+package script
 
-import script.getPropertyOsName
-import script.test.DumpTestAction
-import script.test.FpsTestAction
-import script.test.StartTestAction
-import script.test.TotalTestAction
+import script.test.InstallTestAction
 
 fun main() {
-    val coldStart = TotalTestAction()
-    coldStart.testAction()
+    val testAction = InstallTestAction()
+    testAction.testAction()
 //    println(getPropertyOsName())
 }
 
